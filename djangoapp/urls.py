@@ -7,8 +7,7 @@ from djangoapp import views  # import the views from djangoapp
 app_name = 'djangoapp'
 urlpatterns = [
     # path for registration
-    # path('register/', views.register, name='register'),
-
+    path('register/', views.register, name='register'),
 
     # path for login
     path(route='login', view=views.login_user, name='login'),
@@ -16,11 +15,12 @@ urlpatterns = [
     # path for logout
     path('logout/', views.logout_request, name='logout'),
 
-    # path for register
-    path('register/', views.register, name='register'),
-
     # path for dealer reviews view
+    # Uncomment the following line and replace `dealer_reviews_view` with the actual view function
+    # path('dealer_reviews/', views.dealer_reviews_view, name='dealer_reviews'),
 
     # path for add a review view
+    # Uncomment the following line and replace `add_review_view` with the actual view function
+    # path('add_review/', views.add_review_view, name='add_review'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

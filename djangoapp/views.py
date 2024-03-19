@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from datetime import datetime
 
@@ -101,6 +102,20 @@ def registration(request):
     else :
         data = {"userName":username,"error":"Already Registered"}
         return JsonResponse(data)
+
+# New register view function
+@csrf_exempt
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}!')
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'djangoapp/register.html', {'form': form})
 
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
