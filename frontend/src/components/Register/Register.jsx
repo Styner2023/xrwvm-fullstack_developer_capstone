@@ -21,7 +21,7 @@ const Register = () => {
   const register = async (e) => {
     e.preventDefault();
 
-    let register_url = window.location.origin+"/djangoapp/register";
+    let register_url = window.location.origin+"/djangoapp/register/";
     
     const res = await fetch(register_url, {
         method: "POST",
