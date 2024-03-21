@@ -12,7 +12,13 @@ app.use(require('body-parser').urlencoded({ extended: false }));
 const reviews_data = JSON.parse(fs.readFileSync("reviews.json", 'utf8'));
 const dealerships_data = JSON.parse(fs.readFileSync("dealerships.json", 'utf8'));
 
-mongoose.connect("mongodb://mongo_db:27017/",{'dbName':'dealershipsDB'});
+mongoose.connect("mongodb://mongo_db:27017/",{'dbName':'dealershipsDB'}, (err) => {
+  if (err) {
+    console.error('Error connecting to MongoDB:', err);
+  } else {
+    console.log('Connected to MongoDB');
+  }
+});
 
 
 const Reviews = require('./review');
@@ -77,12 +83,25 @@ app.get('/fetchDealers', async (req, res) => {
     }
   });
   
-  // Express route to fetch dealer by a particular id
-  app.get('/fetchDealer/:id', async (req, res) => {
+// Express route to fetch dealer by a particular id
+app.get('/fetchDealer/:id', async (req, res) => {
     try {
-      const document = await Dealerships.findById(req.params.id);
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        console.error('Invalid ID:', req.params.id);
+        return res.status(400).json({ error: 'Invalid ID' });
+      }
+      console.log(`Fetching dealer with ID: ${id}`);
+      console.log(`Database connection state: ${mongoose.connection.readyState}`);
+      const document = await Dealerships.findOne({id: id});
+      console.log(`findOne result: ${document}`);
+      if (!document) {
+        console.error(`No dealer found with ID: ${id}`);
+        return res.status(404).json({ error: `No dealer found with ID: ${id}` });
+      }
       res.json(document);
     } catch (error) {
+      console.error('Error fetching dealer:', error);
       res.status(500).json({ error: 'Error fetching document' });
     }
   });
