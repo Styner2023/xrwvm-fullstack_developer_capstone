@@ -12,14 +12,13 @@ app.use(require('body-parser').urlencoded({ extended: false }));
 const reviews_data = JSON.parse(fs.readFileSync("reviews.json", 'utf8'));
 const dealerships_data = JSON.parse(fs.readFileSync("dealerships.json", 'utf8'));
 
-mongoose.connect("mongodb://mongo_db:27017/",{'dbName':'dealershipsDB'}, (err) => {
-  if (err) {
-    console.error('Error connecting to MongoDB:', err);
-  } else {
-    console.log('Connected to MongoDB');
-  }
-});
-
+mongoose.connect('mongodb://db_container:27017/database', {useNewUrlParser: true})
+  .then(() => {
+    console.log('Connected to MongoDB')
+  })
+  .catch(err => {
+    console.error('Error connecting to MongoDB', err)
+  });
 
 const Reviews = require('./review');
 
@@ -83,29 +82,31 @@ app.get('/fetchDealers', async (req, res) => {
     }
   });
   
-// Express route to fetch dealer by a particular id
+// Fetch dealer by id route
 app.get('/fetchDealer/:id', async (req, res) => {
-    try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        console.error('Invalid ID:', req.params.id);
-        return res.status(400).json({ error: 'Invalid ID' });
-      }
-      console.log(`Fetching dealer with ID: ${id}`);
-      console.log(`Database connection state: ${mongoose.connection.readyState}`);
-      const document = await Dealerships.findOne({id: id});
-      console.log(`findOne result: ${document}`);
-      if (!document) {
-        console.error(`No dealer found with ID: ${id}`);
-        return res.status(404).json({ error: `No dealer found with ID: ${id}` });
-      }
-      res.json(document);
-    } catch (error) {
-      console.error('Error fetching dealer:', error);
-      res.status(500).json({ error: 'Error fetching document' });
-    }
-  });
 
+    try {
+  
+      const id = Number(req.params.id);
+  
+      if (isNaN(id)) {
+        return res.status(400).json({error: 'Invalid dealer id'}); 
+      }
+  
+      const dealer = await Dealerships.findOne({id});
+      
+      if (!dealer) {
+        return res.status(404).json({error: 'Dealer not found'});
+      }
+  
+      res.json(dealer);
+  
+    } catch (error) {
+      res.status(500).json({error: 'Error fetching dealer'});
+    }
+  
+  });
+  
 //Express route to insert review
 app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
   data = JSON.parse(req.body);
