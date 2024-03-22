@@ -12,6 +12,7 @@ from django.contrib.auth import login, authenticate
 import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
+from .models import CarMake, CarModel
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -59,13 +60,7 @@ def login_user(request):
         # Logout the user
 def logout_request(request):
     logout(request)
-    data = {"userName":""}
-    return JsonResponse(data)
-    
-    # Add a success message
     messages.success(request, "You have successfully logged out.")
-
-    # Redirect to a page of your choice
     return redirect('home')  # Redirect to 'home' page
 
 # Create a `registration` view to handle sign up request
@@ -116,6 +111,17 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'djangoapp/register.html', {'form': form})
+
+def get_cars(request):
+    count = CarMake.objects.filter().count()
+    print(count)
+    if(count == 0):
+        initiate()
+    car_models = CarModel.objects.select_related('car_make')
+    cars = []
+    for car_model in car_models:
+        cars.append({"CarModel": car_model.name, "CarMake": car_model.car_make.name})
+    return JsonResponse({"CarModels":cars})
 
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
