@@ -6,6 +6,11 @@ from djangoapp import views  # import the views from djangoapp
 
 app_name = 'djangoapp'
 urlpatterns = [
+
+    # path for get_cars
+    path('get_cars/', views.get_cars, name='getcars'),
+    # path(route='get_cars', view=views.get_cars, name ='getcars'),
+
     # path for registration
     path('register/', views.registration, name='register'),
 

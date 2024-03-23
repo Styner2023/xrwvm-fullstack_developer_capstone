@@ -112,6 +112,9 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'djangoapp/register.html', {'form': form})
 
+# # Get an instance of a logger
+# logger = logging.getLogger(__name__)
+
 def get_cars(request):
     count = CarMake.objects.filter().count()
     print(count)
@@ -121,7 +124,28 @@ def get_cars(request):
     cars = []
     for car_model in car_models:
         cars.append({"CarModel": car_model.name, "CarMake": car_model.car_make.name})
+    logger.info(cars)  # Log the data
     return JsonResponse({"CarModels":cars})
+
+def initiate():
+    # Define some default car makes
+    car_makes = ['Toyota', 'Ford', 'Chevrolet']
+
+    # Define some default car models for each car make
+    car_models = {
+        'Toyota': ['Corolla', 'Camry', 'Prius'],
+        'Ford': ['F-150', 'Escape', 'Mustang'],
+        'Chevrolet': ['Malibu', 'Impala', 'Camaro']
+    }
+
+    # Create the car makes and models in the database
+    for make in car_makes:
+        car_make = CarMake(name=make)
+        car_make.save()
+
+        for model in car_models[make]:
+            car_model = CarModel(name=model, car_make=car_make)
+            car_model.save()
 
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
