@@ -31,7 +31,19 @@ class CarModel(models.Model):
                                    MaxValueValidator(2023),
                                    MinValueValidator(2015)
                                ])
+                               
     # Other fields as needed
 
     def __str__(self):
         return self.name  # Return the name as the string representation
+        from django.db import models
+
+class Dealership(models.Model):
+  name = models.CharField(max_length=100)
+  address = models.CharField(max_length=200)
+
+class Review(models.Model):
+  dealer = models.ForeignKey(Dealership, on_delete=models.CASCADE)
+  text = models.TextField()
+  rating = models.IntegerField()
+

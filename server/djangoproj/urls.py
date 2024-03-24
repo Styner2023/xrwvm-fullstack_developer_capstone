@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-from djangoapp.views import logout_request  # import the logout view
+from djangoapp.views import logout_request, get_dealerships, get_dealer_details, get_dealer_reviews
 from djangoapp import views  # import the views from djangoapp
 
 urlpatterns = [
@@ -29,4 +29,10 @@ urlpatterns = [
     path('login/', TemplateView.as_view(template_name="index.html")),
     path('register/', TemplateView.as_view(template_name="index.html")),
     path('djangoapp/', include('djangoapp.urls')),
+
+    # Add new patterns here  
+    path('logout/', logout_request),
+    path('dealerships/', get_dealerships),
+    path('dealers/<int:dealer_id>/', get_dealer_details),
+    path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
