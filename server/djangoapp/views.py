@@ -13,6 +13,7 @@ import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .models import CarMake, CarModel, Dealership 
+from .populate import initiate
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -116,11 +117,14 @@ def register(request):
 # logger = logging.getLogger(__name__)
 
 def get_cars(request):
-    car_makes = CarMake.objects.all()[:5]  # Limit to 5 car makes
+    if CarMake.objects.count() < 5:
+        initiate()
+
+    car_makes = CarMake.objects.all()  # Get all car makes
 
     cars = []
     for car_make in car_makes:
-        car_models = CarModel.objects.filter(car_make=car_make)[:3]  # Limit to 3 car models per make
+        car_models = CarModel.objects.filter(car_make=car_make)  # Get all car models for this make
         for car_model in car_models:
             cars.append({"CarModel": car_model.name, "CarMake": car_make.name})
 
@@ -175,3 +179,28 @@ def get_dealer_details(request, dealer_id):
 def add_review(request):
     # Implement this view
     pass
+
+@csrf_exempt
+def populate_database(request):
+    if request.method == 'POST':
+        try:
+            # Load JSON data from request body
+            data = json.loads(request.body)
+            # Extract car makes and models from data
+            car_makes = data.get('car_makes')
+            car_models = data.get('car_models')
+
+            # Create the car makes and models in the database
+            for make in car_makes:
+                car_make, created = CarMake.objects.get_or_create(name=make)
+
+                for model in car_models[make]:
+                    car_model, created = CarModel.objects.get_or_create(name=model, car_make=car_make)
+
+            return JsonResponse({"message": "Database populated successfully"})
+        except json.JSONDecodeError:
+            # If error, return a response with status 400 (Bad Request)
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    else:
+        # If request method is not POST, return a response with status 405 (Method Not Allowed)
+        return JsonResponse({'error': 'Method not allowed'}, status=405)

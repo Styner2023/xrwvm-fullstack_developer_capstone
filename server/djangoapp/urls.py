@@ -1,5 +1,5 @@
 # Uncomment the imports before you add the code
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from djangoapp import views  # import the views from djangoapp
@@ -9,7 +9,6 @@ urlpatterns = [
 
     # path for get_cars
     path('get_cars/', views.get_cars, name='getcars'),
-    # path(route='get_cars', view=views.get_cars, name ='getcars'),
 
     # path for registration
     path('register/', views.registration, name='register'),
@@ -19,6 +18,9 @@ urlpatterns = [
 
     # path for logout
     path('logout/', views.logout_request, name='logout'),
+    
+    # path for populate_database
+    path('populate_database/', views.populate_database, name='populate_database'),
 
     # path for dealer reviews view
     # Uncomment the following line and replace `dealer_reviews_view` with the actual view function
