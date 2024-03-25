@@ -146,32 +146,32 @@ def initiate():
 
         for model in car_models[make]:
             car_model, created = CarModel.objects.get_or_create(name=model, car_make=car_make)
- 
-# # Update the `get_dealerships` view to render the index page with
-# a list of dealerships
-# def get_dealerships(request):
+
 def get_dealerships(request):
-  dealers = Dealership.objects.all()
-  data = [{"id": d.id, "name": d.name} for d in dealers] 
-  return JsonResponse(data, safe=False)
+    dealers = Dealership.objects.all()
+    data = [{"id": d.id, "name": d.name} for d in dealers] 
+    return JsonResponse(data, safe=False)
 
-# ...
+def get_dealer_reviews(request, dealer_id):
+    # Implement this view
+    pass
 
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
-def get_dealer_reviews(request,dealer_id):
-# ...
-
-# Create a `get_dealer_details` view to render the dealer details
 def get_dealer_details(request, dealer_id):
-  dealer = get_object_or_404(Dealership, id=dealer_id)
-  
-  context = {
-    'dealer': dealer
-  }
+    """Returns page with details for the given dealer"""
+    
+    try:
+        dealer_id = int(dealer_id) 
+    except ValueError:
+        raise Http404()
+        
+    dealer = get_object_or_404(Dealership, id=dealer_id)
 
-  return render(request, 'dealer_details.html', context) 
+    context = {
+        'dealer': dealer
+    }
 
+    return render(request, 'dealer_details.html', context)
 
-# Create a `add_review` view to submit a review
-# def add_review(request):
-# ...
+def add_review(request):
+    # Implement this view
+    pass
