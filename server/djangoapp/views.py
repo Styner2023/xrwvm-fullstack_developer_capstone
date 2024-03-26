@@ -15,6 +15,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import CarMake, CarModel, Dealership 
 from .populate import initiate
 
+# Place this import statement here
+from .restapis import get_request, analyze_review_sentiments, post_review
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -151,34 +154,46 @@ def initiate():
         for model in car_models[make]:
             car_model, created = CarModel.objects.get_or_create(name=model, car_make=car_make)
 
-def get_dealerships(request):
-    dealers = Dealership.objects.all()
-    data = [{"id": d.id, "name": d.name} for d in dealers] 
-    return JsonResponse(data, safe=False)
+#Update the `get_dealerships` render list of dealerships all by default, particular state if state is passed
+def get_dealerships(request, state="All"):
+    if(state == "All"):
+        endpoint = "/fetchDealers"
+    else:
+        endpoint = "/fetchDealers/"+state
+    dealerships = get_request(endpoint)
+    return JsonResponse({"status":200,"dealers":dealerships})
 
 def get_dealer_reviews(request, dealer_id):
-    # Implement this view
-    pass
+    # if dealer id has been provided
+    if(dealer_id):
+        endpoint = "/fetchReviews/dealer/"+str(dealer_id)
+        reviews = get_request(endpoint)
+        for review_detail in reviews:
+            response = analyze_review_sentiments(review_detail['review'])
+            print(response)
+            review_detail['sentiment'] = response['sentiment']
+        return JsonResponse({"status":200,"reviews":reviews})
+    else:
+        return JsonResponse({"status":400,"message":"Bad Request"})
 
 def get_dealer_details(request, dealer_id):
-    """Returns page with details for the given dealer"""
-    
-    try:
-        dealer_id = int(dealer_id) 
-    except ValueError:
-        raise Http404()
-        
-    dealer = get_object_or_404(Dealership, id=dealer_id)
-
-    context = {
-        'dealer': dealer
-    }
-
-    return render(request, 'dealer_details.html', context)
+    if(dealer_id):
+        endpoint = "/fetchDealer/"+str(dealer_id)
+        dealership = get_request(endpoint)
+        return JsonResponse({"status":200,"dealer":dealership})
+    else:
+        return JsonResponse({"status":400,"message":"Bad Request"})
 
 def add_review(request):
-    # Implement this view
-    pass
+    if(request.user.is_anonymous == False):
+        data = json.loads(request.body)
+        try:
+            response = post_review(data)
+            return JsonResponse({"status":200})
+        except:
+            return JsonResponse({"status":401,"message":"Error in posting review"})
+    else:
+        return JsonResponse({"status":403,"message":"Unauthorized"})
 
 @csrf_exempt
 def populate_database(request):

@@ -36,3 +36,4 @@ urlpatterns = [
     path('dealers/<int:dealer_id>/', get_dealer_details),
     path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
