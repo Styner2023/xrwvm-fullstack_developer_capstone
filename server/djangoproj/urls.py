@@ -18,7 +18,9 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-from djangoapp.views import logout_request, get_dealerships, get_dealer_details, get_dealer_reviews
+from djangoapp.views import logout_request, get_dealers, get_dealer_details, get_dealer_reviews
+from djangoapp.views import get_dealerships
+
 from djangoapp import views  # import the views from djangoapp
 
 urlpatterns = [
