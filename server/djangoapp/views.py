@@ -1,75 +1,56 @@
+import requests
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from datetime import datetime
-
-from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .models import CarMake, CarModel, Dealership 
 from .populate import initiate
-
-# Place this import statement here
 from .restapis import get_request, analyze_review_sentiments, post_review
 
-# Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def login_user(request):
-    # Check if request body is not empty
     if request.body:
         try:
-            # Try to load JSON data from request body
             data = json.loads(request.body)
         except json.JSONDecodeError:
-            # If error, return a response with status 400 (Bad Request)
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
-        # Extract username and password from data
         username = data.get('userName')
         password = data.get('password')
 
-        # Check if username and password are not None
         if username is not None and password is not None:
-            # Log the received username and password
             logger.info(f"Received username: {username}")
             logger.info(f"Received password: {password}")
 
-            # Try to check if provided credential can be authenticated
             user = authenticate(username=username, password=password)
             if user is not None:
-                # If user is valid, call login method to login current user
                 login(request, user)
                 data = {"userName": username, "status": "Authenticated"}
                 return JsonResponse(data)
             else:
-                # Log a message if authentication failed
                 logger.warning(f"Authentication failed for username: {username}")
                 data = {"status": "Failed", "message": "Invalid username or password"}
                 return JsonResponse(data, status=401)
         else:
-            # If either username or password is None, return a response with status 400
             return JsonResponse({'error': 'Missing username or password'}, status=400)
     else:
-        # If request body is empty, return a response with status 400
         return JsonResponse({'error': 'Empty request body'}, status=400)
-        
-        # Logout the user
+
 def logout_request(request):
     logout(request)
     messages.success(request, "You have successfully logged out.")
-    return redirect('home')  # Redirect to 'home' page
+    return redirect('home')
 
-# Create a `registration` view to handle sign up request
-# @csrf_exempt
-# def registration(request):
 @csrf_exempt
 def registration(request):
     context = {}
@@ -83,18 +64,13 @@ def registration(request):
     username_exist = False
     email_exist = False
     try:
-        # Check if user already exists
         User.objects.get(username=username)
         username_exist = True
     except:
-        # If not, simply log this is a new user
         logger.debug("{} is new user".format(username))
 
-    # If it is a new user
     if not username_exist:
-        # Create user in auth_user table
         user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,password=password, email=email)
-        # Login the user and redirect to list page
         login(request, user)
         data = {"userName":username,"status":"Authenticated"}
         return JsonResponse(data)
@@ -102,7 +78,6 @@ def registration(request):
         data = {"userName":username,"error":"Already Registered"}
         return JsonResponse(data)
 
-# New register view function
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
@@ -116,29 +91,24 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'djangoapp/register.html', {'form': form})
 
-# # Get an instance of a logger
-# logger = logging.getLogger(__name__)
-
 def get_cars(request):
     if CarMake.objects.count() < 5:
         initiate()
 
-    car_makes = CarMake.objects.all()  # Get all car makes
+    car_makes = CarMake.objects.all()
 
     cars = []
     for car_make in car_makes:
-        car_models = CarModel.objects.filter(car_make=car_make)  # Get all car models for this make
+        car_models = CarModel.objects.filter(car_make=car_make)
         for car_model in car_models:
             cars.append({"CarModel": car_model.name, "CarMake": car_make.name})
 
-    logger.info(cars)  # Log the data
+    logger.info(cars)
     return JsonResponse({"CarModels":cars})
 
 def initiate():
-    # Define some default car makes
     car_makes = ['Toyota', 'Ford', 'Chevrolet', 'Honda', 'Nissan']
 
-    # Define some default car models for each car make
     car_models = {
         'Toyota': ['Corolla', 'Camry', 'Prius', 'Avalon', 'Yaris'],
         'Ford': ['F-150', 'Escape', 'Mustang', 'Explorer', 'Fusion'],
@@ -147,24 +117,26 @@ def initiate():
         'Nissan': ['Altima', 'Maxima', 'Rogue', 'Murano', 'Versa']
     }
 
-    # Create the car makes and models in the database
     for make in car_makes:
         car_make, created = CarMake.objects.get_or_create(name=make)
 
         for model in car_models[make]:
             car_model, created = CarModel.objects.get_or_create(name=model, car_make=car_make)
 
-#Update the `get_dealerships` render list of dealerships all by default, particular state if state is passed
 def get_dealerships(request, state="All"):
+    base_url = 'https://kstiner101-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'  # Your dealership API base URL
     if(state == "All"):
-        endpoint = "/fetchDealers"
+        endpoint = "/get_dealers"
     else:
-        endpoint = "/fetchDealers/"+state
-    dealerships = get_request(endpoint)
+        # Ensure state does not start or end with a '/'
+        state = state.strip('/')
+        endpoint = "/get_dealers/"+state
+    dealerships = get_request(base_url + endpoint)
+    if dealerships is None:
+        return JsonResponse({"status":500,"message":"Error fetching dealerships"})
     return JsonResponse({"status":200,"dealers":dealerships})
 
 def get_dealer_reviews(request, dealer_id):
-    # if dealer id has been provided
     if(dealer_id):
         endpoint = "/fetchReviews/dealer/"+str(dealer_id)
         reviews = get_request(endpoint)
@@ -199,13 +171,10 @@ def add_review(request):
 def populate_database(request):
     if request.method == 'POST':
         try:
-            # Load JSON data from request body
             data = json.loads(request.body)
-            # Extract car makes and models from data
             car_makes = data.get('car_makes')
             car_models = data.get('car_models')
 
-            # Create the car makes and models in the database
             for make in car_makes:
                 car_make, created = CarMake.objects.get_or_create(name=make)
 
@@ -214,8 +183,25 @@ def populate_database(request):
 
             return JsonResponse({"message": "Database populated successfully"})
         except json.JSONDecodeError:
-            # If error, return a response with status 400 (Bad Request)
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
-        # If request method is not POST, return a response with status 405 (Method Not Allowed)
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+def get_request(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xx
+    except requests.exceptions.RequestException as err:
+        print(f"Request error: {err}")
+        return None
+    except requests.exceptions.HTTPError as errh:
+        print(f"HTTP error: {errh}")
+        return None
+    except requests.exceptions.ConnectionError as errc:
+        print(f"Error connecting: {errc}")
+        return None
+    except requests.exceptions.Timeout as errt:
+        print(f"Timeout error: {errt}")
+        return None
+
+    return response.json()
