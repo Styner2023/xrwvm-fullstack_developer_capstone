@@ -30,7 +30,7 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name="Contact.html")),
     path('login/', TemplateView.as_view(template_name="index.html")),
     path('register/', TemplateView.as_view(template_name="index.html")),
-    path('', include('djangoapp.urls')),
+    path('djangoapp/', include('djangoapp.urls')),  # Changed this line
 
     # Add new patterns here  
     path('logout/', logout_request),
@@ -40,4 +40,3 @@ urlpatterns = [
     path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
     path('dealers/', TemplateView.as_view(template_name="index.html")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
