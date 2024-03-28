@@ -1,4 +1,14 @@
-from .models import CarMake, CarModel
+from .models import CarMake, CarModel, Dealership
+
+def populate_dealerships():
+    dealership_data = [
+        {"name": "Dealership A", "address": "123 A Street"},
+        {"name": "Dealership B", "address": "456 B Street"},
+        # Add more dealerships as needed
+    ]
+
+    for data in dealership_data:
+        Dealership.objects.create(name=data['name'], address=data['address'])
 
 def initiate():
     car_make_data = [
@@ -12,7 +22,6 @@ def initiate():
     car_make_instances = []
     for data in car_make_data:
             car_make_instances.append(CarMake.objects.create(name=data['name'], description=data['description']))
-
 
     # Create CarModel instances with the corresponding CarMake instances
     car_model_data = [
@@ -36,3 +45,7 @@ def initiate():
 
     for data in car_model_data:
             CarModel.objects.create(name=data['name'], car_make=data['car_make'], type=data['type'], year=data['year'])
+
+    # Call the populate_dealerships function
+    populate_dealerships()
+    

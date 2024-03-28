@@ -1,4 +1,4 @@
-import Dealers from './components/Dealers/Dealers'; // Import your Dealers component
+import Dealers from './components/Dealers/Dealers';
 import Register from "./components/Register/Register";
 import LoginPanel from "./components/Login/Login";
 import RootPage from "./components/RootPage"; // Import your RootPage component
@@ -12,7 +12,7 @@ function App() {
         <Route path="/root" element={<RootPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dealers" element={<Dealers />} /> {/* Add this line */}
+        <Route path="/dealers" element={<Dealers/>} />
       </Routes>
     );
 }
