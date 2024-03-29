@@ -30,7 +30,8 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name="Contact.html")),
     path('login/', TemplateView.as_view(template_name="index.html")),
     path('register/', TemplateView.as_view(template_name="index.html")),
-    path('djangoapp/', include('djangoapp.urls')),  # Changed this line
+    # path('djangoapp/', include('djangoapp.urls')),  # Changed this line
+    path('', include('djangoapp.urls')),  # Changed this line
 
     # Add new patterns here  
     path('logout/', logout_request),

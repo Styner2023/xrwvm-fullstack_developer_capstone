@@ -155,8 +155,12 @@ def get_dealer_details(request, dealer_id):
 
 def get_dealers(request):
     dealers = Dealership.objects.all()
-    dealers_list = [{"name": dealer.name, "location": dealer.location} for dealer in dealers]
-    return JsonResponse(dealers_list, safe=False)
+    context = {"dealers": dealers}
+    return render(request, 'dealers.html', context)
+# def get_dealers(request):
+#     dealers = Dealership.objects.all()
+#     dealers_list = [{"name": dealer.name, "location": dealer.location} for dealer in dealers]
+#     return JsonResponse(dealers_list, safe=False)
 
 def add_review(request):
     if(request.user.is_anonymous == False):
