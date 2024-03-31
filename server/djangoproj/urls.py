@@ -30,13 +30,11 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name="Contact.html")),
     path('login/', TemplateView.as_view(template_name="index.html")),
     path('register/', TemplateView.as_view(template_name="index.html")),
-    # path('djangoapp/', include('djangoapp.urls')),  # Changed this line
     path('', include('djangoapp.urls')),  # Changed this line
 
     # Add new patterns here  
     path('logout/', logout_request),
     path('dealers/', TemplateView.as_view(template_name="index.html")),
-    # path('dealerships/', views.get_dealerships),
     path('dealers/<int:dealer_id>/', get_dealer_details),
     path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
     path('dealer/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
