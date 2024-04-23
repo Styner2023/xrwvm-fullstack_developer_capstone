@@ -56,6 +56,12 @@ def login_user(request):
         # If request method is not POST, return a response with status 405 (Method Not Allowed)
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+def logout_user(request):
+    if request.method == 'POST':
+        return logout_request(request)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 def logout_request(request):
     logout(request)
     messages.success(request, "You have successfully logged out.")

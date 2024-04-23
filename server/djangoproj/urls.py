@@ -18,10 +18,10 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-from djangoapp.views import logout_request, get_dealers, get_dealer_details, get_dealer_reviews, login_user  # added login_user
+from djangoapp.views import get_dealers, get_dealer_details, get_dealer_reviews, login_user
 from djangoapp.views import get_dealerships
 
-from djangoapp import views  # import the views from djangoapp
+from djangoapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,10 +30,8 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name="Contact.html")),
     path('login/', TemplateView.as_view(template_name="index.html")),
     path('register/', TemplateView.as_view(template_name="index.html")),
-    path('', include('djangoapp.urls')),  # Changed this line
+    path('', include('djangoapp.urls')),
 
-    # Add new patterns here  
-    path('logout/', logout_request),
     path('dealers/', TemplateView.as_view(template_name="index.html")),
     path('dealers/<int:dealer_id>/', get_dealer_details),
     path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),

@@ -22,9 +22,14 @@
     
     const logout = async (e) => {
         e.preventDefault();
-        let logout_url = window.location.origin+"/djangoapp/logout";
+        let logout_url = window.location.origin+"/logout/";
+  const csrftoken = getCookie('csrftoken');  // get CSRF token      
   const res = await fetch(logout_url, {
-    method: "GET",
+    method: "POST",
+    headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken  // include CSRF token in the header
+        },
   });
 
   const json = await res.json();
