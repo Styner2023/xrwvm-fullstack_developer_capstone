@@ -15,16 +15,21 @@ logger = logging.getLogger(__name__)
 
 def login_user(request):
     if request.method == 'POST':
-        try:
-            # Try to load JSON data from request body
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            # If error, return a response with status 400 (Bad Request)
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-
-        # Extract username and password from data
-        username = data.get('userName')
-        password = data.get('password')
+        if request.content_type == 'application/json':
+            try:
+                # Try to load JSON data from request body
+                data = json.loads(request.body)
+                # Extract username and password from data
+                username = data.get('userName')
+                password = data.get('password')
+            except json.JSONDecodeError:
+                # If error, return a response with status 400 (Bad Request)
+                # return HttpResponse("Login logic not implemented.")
+                return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        else:
+            # Extract username and password from request.POST
+            username = request.POST.get('userName')
+            password = request.POST.get('password')
 
         # Check if username and password are not None
         if username is not None and password is not None:

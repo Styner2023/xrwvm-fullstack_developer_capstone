@@ -9,7 +9,7 @@ const Login = ({ onClose }) => {
   const [password, setPassword] = useState("");
   const [open,setOpen] = useState(true)
 
-  let login_url = "https://kstiner101-8000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/login/";
+  let login_url = "https://kstiner101-8000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/login";
 
   const login = async (e) => {
     e.preventDefault();

@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
-from djangoapp.views import logout_request, get_dealers, get_dealer_details, get_dealer_reviews
+from djangoapp.views import logout_request, get_dealers, get_dealer_details, get_dealer_reviews, login_user  # added login_user
 from djangoapp.views import get_dealerships
 
 from djangoapp import views  # import the views from djangoapp
@@ -40,4 +40,3 @@ urlpatterns = [
     path('dealer/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
     path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
