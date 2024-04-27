@@ -1,0 +1,1 @@
+export APP_PATH=database/app.js

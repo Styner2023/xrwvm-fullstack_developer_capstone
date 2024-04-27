@@ -1,3 +1,4 @@
+
 const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
@@ -16,14 +17,13 @@ app.use(require('body-parser').urlencoded({ extended: false }));
 // const dealerships_data = JSON.parse(fs.readFileSync("dealerships.json", 'utf8'));
 
 
-mongoose.connect('mongodb://db_container:27017/test', {useNewUrlParser: true})
+mongoose.connect('mongodb://localhost:27017/test')
  .then(() => {
    console.log('Connected to MongoDB')
  })
  .catch(err => {
    console.error('Error connecting to MongoDB', err)
  });
-
 
 // mongoose.connect('mongodb://db_container:27017/database')
 //   .then(() => {
