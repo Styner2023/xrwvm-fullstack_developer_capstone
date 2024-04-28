@@ -32,9 +32,9 @@ urlpatterns = [
     path('register/', TemplateView.as_view(template_name="index.html")),
     path('', include('djangoapp.urls')),
 
-    path('dealers/', TemplateView.as_view(template_name="index.html")),
-    path('dealers/<int:dealer_id>/', get_dealer_details),
-    path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
-    path('dealer/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
-    path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
+    # path('dealers/', TemplateView.as_view(template_name="index.html")),
+    # path('dealers/<int:dealer_id>/', get_dealer_details),
+    # path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
+    # path('dealer/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
+    # path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

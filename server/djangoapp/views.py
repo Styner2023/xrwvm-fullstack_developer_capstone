@@ -179,13 +179,29 @@ def dealer_details(request, dealer_id):
         return JsonResponse({"status": 400, "message": "Bad Request"})
 
 def get_dealers(request):
-    dealers = Dealership.objects.all()
-    context = {"dealers": dealers}
-    return render(request, 'dealers.html', context)
-# def get_dealers(request):
-#     dealers = Dealership.objects.all()
-#     dealers_list = [{"name": dealer.name, "location": dealer.location} for dealer in dealers]
-#     return JsonResponse(dealers_list, safe=False)
+    # Fetch the list of dealers from the backend service
+    endpoint = "/fetchDealers"
+    dealers = get_request(endpoint)
+
+    logger.info(f"Dealers data received from backend: {dealers}")
+
+    # Check if the response contains a list of dealers
+    if isinstance(dealers, list):
+        # Iterate over the list and check if each item is a dictionary
+        for dealer in dealers:
+            if not isinstance(dealer, dict):
+                logger.warning(f"Unexpected data format: {dealer}")
+                return render(request, 'dealers.html', {"error": "Failed to fetch dealers"})
+
+        # Create a context dictionary to pass the dealer data to the template
+        context = {"dealers": dealers}
+
+        # Render the template with the dealer data
+        return render(request, 'dealers.html', context)
+    else:
+        # Handle the case when the response is not a list of dealers
+        logger.warning(f"Unexpected data format: {dealers}")
+        return render(request, 'dealers.html', {"error": "Failed to fetch dealers"})
 
 def add_review(request):
     if(request.user.is_anonymous == False):

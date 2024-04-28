@@ -84,11 +84,16 @@ const PostReview = () => {
     let carmodelsarr = Array.from(retobj.CarModels)
     setCarmodels(carmodelsarr)
   }
+
   useEffect(() => {
     get_dealer();
     get_cars();
-  },[]);
-
+  }, [get_cars, get_dealer]);
+  
+//   useEffect(() => {
+//     get_dealer();
+//     get_cars();
+//   },[]);
 
   return (
     <div>

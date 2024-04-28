@@ -28,6 +28,36 @@
         <button type="submit">Submit Review</button>
     </form>
 
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dealer Details</title>
+</head>
+<body>
+    <h1>Dealer Details</h1>
+    <h2>{{ dealer.name }}</h2>
+    <p>Location: {{ dealer.location }}</p>
+    <p>Description: {{ dealer.description }}</p>
+
+    <h3>Reviews</h3>
+    <ul>
+        {% for review in reviews %}
+        <li>
+            <p>{{ review.review }}</p>
+            <p>Sentiment: {{ review.sentiment }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Post a Review</h3>
+    <form id="review-form" method="post">
+        {% csrf_token %}
+        <label for="review-text">Review:</label>
+        <textarea id="review-text" name="review"></textarea>
+        <button type="submit">Submit Review</button>
+    </form>
+
     <script>
         const reviewForm = document.getElementById('review-form');
         reviewForm.addEventListener('submit', async (event) => {

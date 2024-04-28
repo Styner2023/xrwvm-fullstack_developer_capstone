@@ -1,3 +1,5 @@
+import React from 'react';
+// import Dealers from './components/Dealers';
 import Dealers from './components/Dealers/Dealers';
 import Dealer from "./components/Dealers/Dealer"
 import Register from "./components/Register/Register";
