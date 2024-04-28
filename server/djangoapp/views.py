@@ -159,6 +159,24 @@ def get_dealer_details(request, dealer_id):
         return JsonResponse({"status":200,"dealer":dealership})
     else:
         return JsonResponse({"status":400,"message":"Bad Request"})
+from django.shortcuts import render
+
+def dealer_details(request, dealer_id):
+    if dealer_id:
+        endpoint = f"/fetchDealer/{dealer_id}"
+        dealership = get_request(endpoint)
+        endpoint = f"/fetchReviews/dealer/{dealer_id}"
+        reviews = get_request(endpoint)
+        for review_detail in reviews:
+            response = analyze_review_sentiments(review_detail['review'])
+            review_detail['sentiment'] = response['sentiment']
+        context = {
+            "dealer": dealership,
+            "reviews": reviews
+        }
+        return render(request, 'dealer_details.html', context)
+    else:
+        return JsonResponse({"status": 400, "message": "Bad Request"})
 
 def get_dealers(request):
     dealers = Dealership.objects.all()
@@ -203,3 +221,4 @@ def populate_database(request):
     else:
         # If request method is not POST, return a response with status 405 (Method Not Allowed)
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+        

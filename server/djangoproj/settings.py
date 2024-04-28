@@ -78,6 +78,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'frontend/build/static'),
             os.path.join(BASE_DIR, 'frontend/public'),  # Add this line
             os.path.join(BASE_DIR, 'templates'),
+            
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -157,4 +158,3 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build'),
     os.path.join(BASE_DIR, 'frontend/build/static'),
 ]
-
