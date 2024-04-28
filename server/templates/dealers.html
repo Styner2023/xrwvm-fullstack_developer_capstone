@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dealers</title>
+    <!-- Include any CSS files or external stylesheets here -->
+    <link rel="stylesheet" href="path/to/your/styles.css">
+</head>
+<body>
+    <header>
+        <!-- Add your header content here (e.g., navigation menu, logo) -->
+    </header>
+
+    <main>
+        <h1>List of Dealers</h1>
+        <!-- This section will display the list of dealers -->
+        <div id="dealers-list">
+            <!-- Django will render the list of dealers here -->
+            {% for dealer in dealers %}
+                <div class="dealer-card">
+                    <h2>{{ dealer.name }}</h2>
+                    <p>{{ dealer.address }}</p>
+                    <!-- Add more dealer details as needed -->
+                    <a href="{% url 'dealer_details' dealer.id %}">View Details</a>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        <!-- Add your footer content here -->
+    </footer>
+
+    <!-- Include any JavaScript files or external scripts here -->
+    <script src="path/to/your/scripts.js"></script>
+</body>
+</html>
