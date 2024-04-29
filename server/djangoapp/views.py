@@ -150,5 +150,17 @@ def populate_database(request):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+def dealers(request):
+    # This function will render a template that should display dealer information.
+    # Ensure the 'dealers_template.html' exists in your templates directory.
+    return render(request, 'dealers_template.html')
+
+def get_dealers_template(request):
+    # Renamed function to avoid conflict with the existing 'get_dealers' function.
+    # This function will render a template that should provide a UI for getting dealer information.
+    # Ensure the 'get_dealers_template.html' exists in your templates directory.
+    return render(request, 'get_dealers_template.html')
+
         
         
