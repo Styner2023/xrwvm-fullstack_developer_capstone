@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
@@ -32,9 +32,14 @@ urlpatterns = [
     path('register/', TemplateView.as_view(template_name="index.html")),
     path('', include('djangoapp.urls')),
 
-    # path('dealers/', TemplateView.as_view(template_name="index.html")),
-    # path('dealers/<int:dealer_id>/', get_dealer_details),
-    # path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
-    # path('dealer/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
-    # path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
+    path('dealers/', TemplateView.as_view(template_name="index.html")),
+    path('get_dealers/', get_dealers, name='get_dealers'), 
+    path('dealers/<int:dealer_id>/', get_dealer_details),
+    path('dealers/<int:dealer_id>/reviews/', get_dealer_reviews),
+    path('dealer/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
+    path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
+    path('get_dealers/', lambda request: redirect('dealers/')), # Add this line
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+urlpatterns += staticfiles_urlpatterns()
