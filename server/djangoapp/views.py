@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from django.http import JsonResponse, HttpResponse, Http404
 from .restapis import get_request, analyze_review_sentiments, post_review
 from django.contrib.auth.models import User
@@ -193,8 +194,11 @@ def get_dealers(request):
                 logger.warning(f"Unexpected data format: {dealer}")
                 return render(request, 'dealers.html', {"error": "Failed to fetch dealers"})
 
-        # Create a context dictionary to pass the dealer data to the template
-        context = {"dealers": dealers}
+        # Get the current date
+        current_date = timezone.now().date()
+
+        # Create a context dictionary to pass the dealer data and current date to the template
+        context = {"dealers": dealers, "current_date": current_date}
 
         # Render the template with the dealer data
         return render(request, 'dealers.html', context)
@@ -237,4 +241,5 @@ def populate_database(request):
     else:
         # If request method is not POST, return a response with status 405 (Method Not Allowed)
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+        
         
