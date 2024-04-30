@@ -7,10 +7,8 @@ import review_icon from "../assets/reviewicon.png"
 
 const Dealers = () => {
   const [dealersList, setDealersList] = useState([]);
-  // let [state, setState] = useState("")
   let [states, setStates] = useState([])
 
-  // let root_url = window.location.origin
   let dealer_url ="/djangoapp/get_dealers";
   
   let dealer_url_by_state = "/djangoapp/get_dealers/";
@@ -76,7 +74,7 @@ return(
       }
       </tr>
      {dealersList.map(dealer => (
-        <tr>
+        <tr key={dealer.id}>
           <td>{dealer['id']}</td>
           <td><a href={'/dealer/'+dealer['id']}>{dealer['full_name']}</a></td>
           <td>{dealer['city']}</td>
@@ -87,6 +85,11 @@ return(
             <td><a href={`/postreview/${dealer['id']}`}><img src={review_icon} className="review_icon" alt="Post Review"/></a></td>
            ):<></>
           }
+          {/* Add your links here */}
+          <td>
+            <a href="https://kstiner101-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/get_dealers/">Get Dealers</a>
+            <a href="https://kstiner101-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealers/">Dealers List</a>
+          </td>
         </tr>
       ))}
      </table>;

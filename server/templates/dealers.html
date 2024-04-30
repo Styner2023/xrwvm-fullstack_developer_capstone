@@ -1,3 +1,5 @@
+{% load static %}
+
 <p>Current Date: {{ current_date }}</p>
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dealers</title>
     <!-- Include any CSS files or external stylesheets here -->
-    <link rel="stylesheet" href="path/to/your/styles.css">
+    <link rel="stylesheet" href="{% static 'css/main.461bf55c.css' %}">
 </head>
 <body>
     <header>
@@ -24,6 +26,9 @@
                     <p>{{ dealer.address }}</p>
                     <!-- Add more dealer details as needed -->
                     <a href="{% url 'dealer_details' dealer.id %}">View Details</a>
+                    <!-- Add your links here -->
+                    <a href="https://kstiner101-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/get_dealers/">Get Dealers</a>
+                    <a href="https://kstiner101-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealers/">Dealers List</a>
                 </div>
             {% endfor %}
         </div>
@@ -34,6 +39,6 @@
     </footer>
 
     <!-- Include any JavaScript files or external scripts here -->
-    <script src="path/to/your/scripts.js"></script>
+    <script src="{% static 'js/main.97bc87ca.js' %}"></script>
 </body>
 </html>
