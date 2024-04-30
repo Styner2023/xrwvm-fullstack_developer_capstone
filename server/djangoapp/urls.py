@@ -19,8 +19,8 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('register/', views.registration, name='register'),
-
-    # New URL patterns
-    path('dealers/', views.dealers, name='dealers'),
-    path('get_dealers_template/', views.get_dealers_template,
 ]
+    # New URL patterns
+    # path('dealers/', views.dealers, name='dealers'),
+    # path('get_dealers_template/', views.get_dealers_template,
+
