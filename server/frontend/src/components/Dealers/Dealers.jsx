@@ -1,5 +1,5 @@
-// import React, { useState, useEffect, useCallback } from 'react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
+// import React, { useState, useEffect } from 'react';
 import "./Dealers.css";
 import "../assets/style.css";
 import Header from '../Header/Header';
@@ -14,37 +14,41 @@ const Dealers = () => {
   let dealer_url_by_state = "/djangoapp/get_dealers/";
  
   const filterDealers = async (state) => {
-    dealer_url_by_state = dealer_url_by_state+state;
-    const res = await fetch(dealer_url_by_state, {
-      method: "GET"
-    });
-    const retobj = await res.json();
-    if(retobj.status === 200) {
-      let state_dealers = Array.from(retobj.dealers)
-      setDealersList(state_dealers)
-    }
-  }
-
-  const get_dealers = async ()=>{
-    const res = await fetch(dealer_url, {
-      method: "GET"
-    });
-    const retobj = await res.json();
-    if(retobj.status === 200) {
-      let all_dealers = Array.from(retobj.dealers)
-      let states = [];
-      all_dealers.forEach((dealer)=>{
-        states.push(dealer.state)
+    let dealer_url_by_state = "/djangoapp/get_dealers/";
+    if (state === "All") {
+      get_dealers();
+    } else {
+      dealer_url_by_state = dealer_url_by_state+state;
+      const res = await fetch(dealer_url_by_state, {
+        method: "GET"
       });
-
-      setStates(Array.from(new Set(states)))
-      setDealersList(all_dealers)
+      const retobj = await res.json();
+      if(retobj.status === 200) {
+        let state_dealers = Array.from(retobj.dealers)
+        setDealersList(state_dealers)
+      }
     }
   }
-  useEffect(() => {
-    get_dealers();
-  },[]);  
-
+    const get_dealers = useCallback(async () => { // Wrap get_dealers with useCallback
+      const res = await fetch(dealer_url, {
+        method: "GET"
+      });
+      const retobj = await res.json();
+      if(retobj.status === 200) {
+        let all_dealers = Array.from(retobj.dealers)
+        let states = [];
+        all_dealers.forEach((dealer)=>{
+          states.push(dealer.state)
+        });
+  
+        setStates(Array.from(new Set(states)))
+        setDealersList(all_dealers)
+      }
+    }, []); // Empty dependency array because get_dealers doesn't depend on any state or props
+  
+    useEffect(() => {
+      get_dealers();
+    }, [get_dealers]); // Include get_dealers in the dependency array
 
 let isLoggedIn = sessionStorage.getItem("username") != null ? true : false;
 return(
