@@ -3,10 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react'; // Import useCa
 import "./Dealers.css";
 import "../assets/style.css";
 import Header from '../Header/Header';
-import review_icon from "../assets/reviewicon.png"
+import review_icon from "../assets/reviewicon.png";
+import DealershipDatabase from "../data/dealerships.json";
 
 const Dealers = () => {
   const [dealersList, setDealersList] = useState([]);
+  const DealersList = DealershipDatabase.dealerships;
   let [states, setStates] = useState([])
 
   let dealer_url ="/djangoapp/get_dealers";
@@ -77,7 +79,7 @@ return(
          ):<></>
       }
       </tr>
-     {dealersList.map(dealer => (
+     {DealersList.map(dealer => (
         <tr key={dealer.id}>
           <td>{dealer['id']}</td>
           <td><a href={'/dealer/'+dealer['id']}>{dealer['full_name']}</a></td>
